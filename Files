@@ -1,0 +1,68 @@
+__winc_id__ = "ae539110d03e49ea8738fd413ac44ba8"
+__human_name__ = "files"
+
+import os,os.path
+import shutil
+#part 1
+def clean_cache():
+    dir = "cache"
+    path= ".\cache"
+    # check if the cache folder exists 
+    if os.path.isdir("cache"):
+        #cache folder already exists, remove all files present inside it
+        shutil.rmtree(path)
+        '''as shutil.rmtree removes the content inside folder and folder itself also,
+         so,creating again empty cache folder in current directory,beacaz it states in the requirement
+         we have to only remove content inside cache folder'''
+        os.mkdir("cache")
+    else:
+        #create cache folder if it does not exists
+        os.mkdir("cache")
+
+#part 2
+def cache_zip(zip_file_path,cache_dir_path):
+     from zipfile import ZipFile
+     with ZipFile(zip_file_path, 'r') as zipObj:
+         #unpacks the zip file 
+         zipObj.extractall(path=cache_dir_path)
+
+#part 3
+def cached_files():
+    cached_files_list = []
+    # going through each path,folders,files in cache folder
+    for path,folders,files in os.walk(os.path.abspath("./cache")):
+        for file in files:
+            # adding the absolute path of files inside cache folder to cached_files_list
+            cached_files_list.append(os.path.abspath(os.path.join(os.path.abspath("./cache"),file)))
+    return cached_files_list
+
+
+#part 4
+def find_password(files_list):
+    search_word = "password"
+    for item in files_list:
+        # opening a text file
+        file = open(item,'r')
+        # read file content
+        lines = file.readlines()
+        # reading each line inside file
+        for line in lines:
+        # checking for search_word in each line
+           if search_word in line:
+               password_string = (line.split(":")[1]).strip()
+               break
+        file.close()
+    return password_string
+
+def main():
+    clean_cache()
+    import os,os.path
+    path = os.path.abspath("files")
+    zip_file_path = os.path.join(path,"data.zip")
+    cache_zip(zip_file_path,os.path.abspath("./files/cache"))
+    files_list = []
+    files_list = cached_files()
+    find_password(files_list)
+
+if __name__ == "__main__":
+    main()
